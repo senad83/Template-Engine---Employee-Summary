@@ -14,53 +14,10 @@ const render = require("./lib/htmlRenderer");
 // and read a little on https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/constructor,
 // also went to bunch a projects on gitHub and analize code
 
-class EmptyArray {
-    constructor (){
-        this.entry = [];
-        this.currentEntry = { name: "", id: "", email: ""};
-    }
-// creating function to add new employee, passing all objects again because I don't know how to
-// pull information from employee.js, engineer.js, intern.js files
-// using syntax from last week homework
-    
-addEmployee(){
-    inquirer.prompt ([
-        {
-            type : "list", 
-            name: "empltype", 
-            message: "What is the type of employee?", 
-            choices: ["Manager", "Intern", "Engineer"]
-        },
-        {
-            type : "input",
-            message: "What is the name?",
-            name: "Name",
-        },
-        {
-            type : "input",
-            message: "What is employee email?",
-            name: "email",
-        },
 
-    ]).then(response => {
-
-        // with this I should save current entries of id, name and email,
-        // that's what other people did on but I cannot make it work
-        this.currentEntry.name = response.name;
-        this.currentEntry.id = response.id;
-        this.currentEntry.email = response.email
-        console.log (response)
-        
-        if (response.choices === "Manager") {
-           this.addManager();
-        }else if (response ==="Intern"){
-            console.log ("Hi Intern")
-        }else {
-            console.log ("hi Eng")
-        };
-       });
-    }
-}
+   
+        var entry = [];
+        var currentEntry = { name: "", id: "", email: ""};
 
 
 function askUserToContinue(){
@@ -71,52 +28,107 @@ function askUserToContinue(){
             }
 ]).then (response => {
     if (response.confirm){
-        this.addEmployee();
+        addEmployee();
     }else {
-        this.quit();
+        quit();
 }
 })
+}
+function quit() {
+    render (entry);
+}
 
-// trying to add info for every new employee with their specifics depending from their 
-// role in the company
-// same syntax like in office hour but I'm getting error
-// when I remove curly brackets error disapiers
-// i saw on solved solution that they're using response for specified things, why?
-
-function addManger() {
-    inquirer.prompt([
-        { type: "input", message: "what is your office number?", name: "office number"}
-    ]).then (response => {
-        const manage = new Manager(this.currentEntry.name, this.currentEntry.id, this.currentEntry.email, response.officeNumber);
-        this.entry.push(manager);
-        this.askUserToContinue();
-        
-    });
-};
 function addEngineer () {inquirer.prompt ([
     {
-        type: "input", messaage: "what is your github username", name: "github"
+        type: "input", message: "what is your github username", name: "gitHub"
     }
 ]).then(response => {
-    const engineer = new Engineer(this.currentEntry.name, this.currentEntry.id, this.currentEntry.email, response.gitHub)
-    this.entry.push(engineer);
-    this.askUserToContinue();
+    const engineer = new Engineer(currentEntry.name, currentEntry.id, currentEntry.email, response.gitHub)
+    entry.push(engineer);
+    askUserToContinue();
 });
 };
 
-function addIntern() {
+function addManager() {
+    inquirer.prompt([
+        { type: "input", message: "what is your office number?", name: "officeNumber"}
+    ]).then (response => {
+        // i saw on solved solution that they're using response for specified things, why?
+        const manager = new Manager(currentEntry.name, currentEntry.id, currentEntry.email, response.officeNumber);
+        entry.push(manager);
+        askUserToContinue();
+    });
+}
+function addIntern(){
     inquirer.prompt ([
         {type: "input", message: "what school did you finish?", name: "school"}
         
     ]).then (response => {
-        const intern = new Intern (this.currentEntry.name, this.currentEntry.id, this.currentEntry.email, response.school)
-        this.entry.push(intern);
-        this.askUserToContinue();
+        const intern = new Intern (currentEntry.name, currentEntry.id, currentEntry.email, response.school)
+        entry.push(intern);
+        askUserToContinue();
     })
-}}
+
+}
 
 
+function addEmployee(){
+    inquirer.prompt ([
+        {
+            type : "list", 
+            name: "empltype", 
+            message: "What is the type of employee?", 
+            choices: ["Manager", "Intern", "Engineer"]
+        },
+        {
+            type : "input",
+            message: "What is the name?",
+            name: "name",
+        },
+        {
+            type : "input",
+            message: "What is employee email?",
+            name: "email",
+        },
+        {
+            type : "input",
+            message: "What is employee id?",
+            name: "id",
+        }
 
+    ]).then(response => {
+        console.log(response.empltype, 'here part 2')
+        console.log(response.choices, "here")
+        // with this I should save current entries of id, name and email,
+        // that's what other people did on but I cannot make it work
+        
+        currentEntry.name = response.name;
+        currentEntry.id = response.id;
+        currentEntry.email = response.email
+        console.log (response)
+
+        // need to fix this is not creating array
+        
+        // tried to pull information from here for next step but adding manager doesn't work
+        // or console.log either
+        // adedd response.empltype with help of assistant on bcs
+        
+        if (response.empltype === "Manager") {
+           addManager();
+        }else if (response.empltype === "Intern"){
+            addIntern();
+        }else {
+            addEngineer();
+        };
+       });
+    };
+
+// this part i got from ask bootcamp spot
+// ask Chris to explain this part
+// const array = new EmptyArray();
+// array.addEmployee();
+
+addEmployee();
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
