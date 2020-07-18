@@ -35,15 +35,18 @@ function askUserToContinue(){
 })
 }
 function quit() {
-    render (entry);
+  var final = render(entry);
+  console.log (final);
+  fs.writeFileSync ("./output/index.html", final);
 }
+
 
 function addEngineer () {inquirer.prompt ([
     {
-        type: "input", message: "what is your github username", name: "gitHub"
+        type: "input", message: "what is your github username", name: "github"
     }
 ]).then(response => {
-    const engineer = new Engineer(currentEntry.name, currentEntry.id, currentEntry.email, response.gitHub)
+    const engineer = new Engineer(currentEntry.name, currentEntry.id, currentEntry.email, response.github)
     entry.push(engineer);
     askUserToContinue();
 });
